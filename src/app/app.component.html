@@ -1,0 +1,14 @@
+<div class="device-container">
+  <header>
+    <h1>
+      Select Device for Download
+    </h1>
+  </header>
+  <main>
+    <app-table
+      [tableHeader]="tableHeader"
+      [tableDataArray]="deviceDataId"
+      (emitDownloadClick)="handleDownload()"
+    ></app-table>
+  </main>
+</div>

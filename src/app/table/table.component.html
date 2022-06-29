@@ -1,0 +1,90 @@
+<table class="custom-table">
+  <caption aria-readonly="true" hidden>
+    {{
+      tableCaption
+    }}
+  </caption>
+  <thead>
+    <tr class="custom-table-font-1" *ngIf="showCheckbox">
+      <th scope="col">
+        <input
+          (change)="handleCheckboxClick($event.target.checked, 0, true)"
+          [indeterminate]="
+            selectedNumber < tableDataArray.length && selectedNumber > 0
+          "
+          [checked]="selectedNumber === tableDataArray.length"
+          type="checkbox"
+          id="all-Selected"
+          name="all-Selected"
+        />
+      </th>
+      <th scope="col">
+        <label for="all-Selected">
+          {{ selectedNumber ? "Selected " + selectedNumber : "None Selected" }}
+        </label>
+      </th>
+      <th colspan="4" scope="col">
+        <app-download
+          (emitDownloadClick)="emitDownloadClick.emit()"
+        ></app-download>
+      </th>
+    </tr>
+    <tr class="custom-table-font-2">
+      <th
+        *ngFor="let tableHeaderData of tableHeader"
+        [class]="tableHeaderData.headerWidthCss"
+        [hidden]="!tableHeaderData.isShown"
+      >
+        <span
+          *ngIf="tableHeaderData.isShown"
+          [ngClass]="{ 'sr-only': tableHeaderData.isScreenReaderOnly }"
+        >
+          {{ tableHeaderData.name }}</span
+        >
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr
+      [ngClass]="{ 'custom-table-row': tableData.selected }"
+      class="custom-table-row-hover custom-table-font-3"
+      *ngFor="let tableData of tableDataArray; index as index"
+    >
+      <td
+        *ngFor="let tableHeaderData of tableHeader"
+        [hidden]="!tableHeaderData.isShown"
+      >
+        <span *ngIf="tableHeaderData.type === 'input'; else otherData">
+          <input
+            (change)="handleCheckboxClick($event.target.checked, tableData.id)"
+            [checked]="tableData.selected"
+            type="checkbox"
+            [id]="'selectDevice' + index"
+            [name]="'selectDevice' + index"
+          />
+          <label [for]="'selectDevice' + index" class="sr-only">
+            select table data at {{ index }}
+          </label>
+        </span>
+        <ng-template #otherData>
+          <span *ngIf="tableHeaderData.type === 'text'; else showImage">
+            {{ tableData[tableHeaderData.name] }}
+          </span>
+        </ng-template>
+        <ng-template #showImage>
+          <span
+            *ngIf="
+              tableHeaderData.type === 'image' &&
+              tableData['status'] === 'available'
+            "
+            ><img
+              class="custom-table-image"
+              alt="image"
+              src="assets/green-circle.png"
+            />
+          </span>
+        </ng-template>
+      </td>
+    </tr>
+  </tbody>
+</table>
